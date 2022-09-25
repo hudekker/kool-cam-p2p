@@ -1,17 +1,17 @@
 // Use async wrapper because there are awaits
 (async () => {
   // Initialize your own peer object
-  let myPeer = getPeerObj();
+  myPeer = getPeerObj();
   await myPeerOpen(myPeer);
   console.log(`My peer id = ${myPeer.id}`);
 
   // Connect to host
-  let hostId = getHost(myPeer.id);
-  let boolHost = hostId === myPeer.id ? true : false;
+  hostId = getHost(myPeer.id);
+  boolHost = hostId === myPeer.id ? true : false;
   console.log(`boolHost = ${boolHost}`);
 
   // Open up your video stream and add it to the screen
-  let stream = await navigator.mediaDevices.getUserMedia({
+  stream = await navigator.mediaDevices.getUserMedia({
     video: { width: 1280, height: 720 },
     audio: false,
   });
@@ -43,28 +43,7 @@
 
     // peerjs on event 'stream', partner peer send you his stream
     call.on("stream", (ptnrStream) => {
-      // add the stream
       addVideoStream(ptnrPeerId, ptnrStream, videoGrid, hostId);
-    });
-
-    // peerjs on event 'close'
-    call.on("close", () => {
-      // Remove video element
-      let el = document.querySelector(`[data-peer-id = "${ptnrPeerId}"]`);
-      el ? el.remove() : console.log(`Video element ${ptnrPeerId} not found`);
-      // Remove partner peer from list
-      // peers.delete(ptnrPeerId);
-      peers = peers.filter((el) => el != ptnrPeerId);
-
-      // Send updated peers?
-    });
-
-    call.on("disconnected", () => {
-      alert(`Ptnr closed ${ptnrPeerId}`);
-    });
-
-    call.on("error", () => {
-      alert(`Ptnr closed ${ptnrPeerId}`);
     });
   });
 
@@ -123,7 +102,7 @@
   const beforeUnloadListener = (event) => {
     event.preventDefault();
     conns.forEach((el) => {
-      el.close();
+      el.send({ key: "close", val: myPeer.id });
     });
   };
 

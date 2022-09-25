@@ -62,12 +62,9 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
   video.addEventListener("loadedmetadata", () => video.play());
 };
 
-const removeVideoElement = (peerId) => {
-  [...document.querySelectorAll(`[data-peer-id = "${peerId}"]`)]?.map((el) => {
-    el.remove();
-  });
-
-  peers.delete(peerId);
+const removePeer = (peerId) => {
+  console.log(`Remove peer ${peerId}`);
+  document.querySelector(`[data-peer-id="${peerId}"]`)?.parentElement?.remove();
 };
 
 const connOpen = (conn) => {
@@ -80,7 +77,6 @@ const connOpen = (conn) => {
 };
 
 const callPeerData = async (myPeer, partnerId, stream, hostId) => {
-  console.log("callPeerData");
   // Create the conn
   conn = myPeer.connect(partnerId);
   conns.push(conn);
@@ -91,35 +87,35 @@ const callPeerData = async (myPeer, partnerId, stream, hostId) => {
   // Keep this event listener open, will receive data multiple times
   // In this implementation, caller is peer and receives only 1 conn.on
   conn.on("data", (data) => {
-    let oldPeers = [...peers];
-    peers = [...data];
+    // This is NOT recursive because the check is for key == peers and this is only from host
+    if (data.key == "peers") {
+      let oldPeers = [...peers];
+      peers = [...data.val];
 
-    console.log("Inside callPeerData, conn.on => received data");
-    // data.forEach((el) => console.log(el));
-    console.log(peers);
-    // console.log(peers);
+      let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
+      newPeers = [...newPeers.filter((x) => x.id != myPeer.id)];
 
-    let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
+      newPeers.forEach((el) => {
+        console.log(`Calling peer Id = ${el}`);
+        callPeerVideo(myPeer, el.id, stream, hostId);
+        callPeerData(myPeer, el.id, stream, hostId);
+      });
+    }
 
-    newPeers.forEach((el) => {
-      console.log(`Calling peer Id = ${el}`);
-      callPeerVideo(myPeer, el.id, stream, hostId);
-    });
-
-    console.log("peers");
-    peers.forEach((el) => console.log(el));
+    if (data.key == "close") {
+      console.log(`Peer ${data.val} closed`);
+      removePeer(data.val);
+    }
   });
 
   conn.on("close", () => {
     console.log(`${partnerId} left the chat`, "admin-msg");
-    conn.close();
-    conn = "";
+    removePeer(partnerId);
   });
 
   conn.on("error", (err) => {
     console.log(`Error ${err.type} `);
-    conn.close();
-    conn = "";
+    removePeer(partnerId);
   });
 };
 
@@ -131,54 +127,53 @@ const callPeerVideo = (myPeer, ptnrPeerId, stream, hostId) => {
 
   // peerjs on event 'stream', partner peer send you his stream
   call.on("stream", (ptnrStream) => {
-    // add the stream
     addVideoStream(ptnrPeerId, ptnrStream, videoGrid, hostId);
   });
 };
 
-const receiveConnRequest = async (conn2) => {
+const receiveConnRequest = async (conn) => {
   // Wait for the connection to open
-  let conn = conn2;
   conns.push(conn);
-  console.log("Host receiveConnRequest");
-
   await connOpen(conn);
 
-  // Send peers to peer
-  conn.send(peers);
+  // If you are the host then send peers array to peer
+  if (myPeer.id === hostId) {
+    conn.send({ key: "peers", val: peers });
+  }
 
   // Keep this event listener open, will receive data multiple times
-  // Host will receive requests multiple times, once per 3rd and more peers
   conn.on("data", (data) => {
-    console.log(`Host received from peers this data`);
-    console.log(data);
+    if (data.key == "peer-close") {
+      removePeer(data.val);
+    }
+
+    if (data.key == "close") {
+      console.log(`Peer ${data.val} closed`);
+      removePeer(data.val);
+    }
   });
 
   conn.on("close", () => {
-    // alert(`Peer conn ${conn.peer} is closed`);
     console.log(`${conn.peer} left the chat`);
-    // conn.close();
-    // conn = "";
-    debugger;
-    // remove grid video
-    document.querySelector(`[data-peer-id="${conn.peer}"]`).parentElement?.remove();
-    // peers = peers.filter((el) => el.id != conn.peer);
-    console.log(`Removed ${conn.peer}`);
-    console.log(peers);
-    // [...document.querySelectorAll(`[data-peer-id = "${conn.peer}"]`)]?.map((el) => {
-    //   el.remove();
-    // });
+    removePeer(conn.peer);
   });
+};
 
-  conn.on("error", (err) => {
-    // alert("conn error is closed");
-    console.log(`${err} `);
-    // conn.close();
-    // conn = "";
+const receiveCallRequest = (call, stream) => {
+  // partner Peer Id
+  const ptnrPeerId = call.peer;
+  let ptnrNickname = call.metadata;
 
-    // remove grid video
-    [...document.querySelectorAll(`[data-peer-id = "${conn.id}"]`)]?.map((el) => {
-      el.remove();
-    });
+  // Keep track of peers, this is sent by host to peers on data requests
+  if (boolHost) {
+    peers.push({ id: ptnrPeerId, nickname: ptnrNickname, order: numUser, host: false });
+  }
+
+  // Answer the call and give them your stream
+  call.answer(stream);
+
+  // peerjs on event 'stream', partner peer send you his stream
+  call.on("stream", (ptnrStream) => {
+    addVideoStream(ptnrPeerId, ptnrStream, videoGrid, hostId);
   });
 };
