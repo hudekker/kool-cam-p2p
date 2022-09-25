@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="icon" href="koolCam512.png" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style-modal.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <title>Kool Cam</title>
+</head>
+
+<body>
+  <div class="chat-heading">
+    <div class="top-line">
+      <h1 class="title" id="title">Kool . Cam</h1>
+      <button id="btn-add-user" class="add-user">Call</button>
+    </div>
+  </div>
+
+  <div id="video-grid"></div>
+
+  <!-- popup modal -->
+  <div id="add-user-modal" class="modal modal-hide">
+    <div class="modal-content">
+      <span id="close" class="close">&times;</span>
+      <h3 id="peer-id"></h3>
+      <h4>Choose Option 1 or 2</h4>
+      <h4>Option 1</h4>
+      <p>Copy this ID and text it to your friend. Ask them to enter it in their Option 2 and click OK</p>
+      <hr>Or</hr>
+      <h4>Option 2</h4>
+      <p>If your friend texted you their ID, then enter your friend's ID below and cick OK</p>
+      <form id="form-partner-id" action="">
+        <input id="input-partner-id" autocomplete="off" />
+        <button id="btn-partner-id" class="btn-partner-id">OK</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+  <script src="globals.js"></script>
+  <script src="util.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
