@@ -159,7 +159,7 @@ const receiveConnRequest = async (conn) => {
   });
 };
 
-const receiveCallRequest = (call, stream) => {
+const receiveCallRequest = (call) => {
   // partner Peer Id
   const ptnrPeerId = call.peer;
   let ptnrNickname = call.metadata;

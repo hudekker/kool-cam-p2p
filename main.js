@@ -28,24 +28,7 @@
   myPeer.on("connection", receiveConnRequest);
 
   // Host and Peers (3 or more) receive call video request from peer(s).
-  myPeer.on("call", (call) => {
-    // partner Peer Id
-    const ptnrPeerId = call.peer;
-    let ptnrNickname = call.metadata;
-
-    // Keep track of peers, this is sent by host to peers on data requests
-    if (boolHost) {
-      peers.push({ id: ptnrPeerId, nickname: ptnrNickname, order: numUser, host: false });
-    }
-
-    // Answer the call and give them your stream
-    call.answer(stream);
-
-    // peerjs on event 'stream', partner peer send you his stream
-    call.on("stream", (ptnrStream) => {
-      addVideoStream(ptnrPeerId, ptnrStream, videoGrid, hostId);
-    });
-  });
+  myPeer.on("call", receiveCallRequest);
 
   // formPartnerId.addEventListener("submit", function (e) {
   //   e.preventDefault();
