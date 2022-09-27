@@ -9,13 +9,14 @@
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
+  overflow-y: initial !important;
 }
 
 /* Modal Content/Box */
 .modal-content {
   position: relative;
   background-color: #fefefe;
-  margin: 15% auto;
+  margin: 5% auto;
   /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
@@ -26,6 +27,8 @@
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
   animation-duration: 0.4s;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
   /* Could be more or less, depending on screen size */
 }
 

@@ -1,5 +1,5 @@
-const getPeerObj = () => {
-  let myPeer = new Peer(null, {
+const getPeerObj = (id = null) => {
+  let myPeer = new Peer(id, {
     host: "evening-atoll-16293.herokuapp.com",
     port: 443,
     secure: true,
@@ -14,23 +14,57 @@ const myPeerOpen = (myPeer) => {
   });
 };
 // Determine if you are the host
-const getHost = (myId) => {
-  //   let a = document.URL.split("?")?.slice(1)[0]?.split("&");
-  //   let b = new Map();
-  //   a?.forEach((el) => b.set(el.split("=")[0], el.split("=")[1]));
-  //   let host = b.get("host");
+const getHostBoolPeerObj = async (myId) => {
+  // myPeer = getPeerObj();
+  // await myPeerOpen(myPeer);
+  // console.log(`My peer id = ${myPeer.id}`);
+  // https://kool.cam is the base
+  let base = document.URL.split("#")[0];
+  let hash = document.URL.split("#")[1];
+  let host = hash?.split("/")[0];
+  let slash = hash?.split("/")[1];
 
-  //   console.log(`myId = ${myId}`);
-
-  let host = document.URL.split("#")[1];
-
-  // If host query parameter doesn't not exist, then you are not the host
+  // If there is no host suffix (www.kool.cam), then it's first time and you are the host
+  // www.kool.cam
   if (!host) {
-    host = myId;
-    window.location.href = document.URL + "#" + host;
+    boolHost = true;
+    myPeer = getPeerObj();
+    await myPeerOpen(myPeer);
+    hostId = myPeer.id;
+    window.location.href = base + "#" + hostId + "/host";
+    return;
   }
 
-  return host;
+  // If there slash is host (/host) then you are host, so get that host peer obj (id=host)
+  // www.kool.cam#<host id>/host
+  if (slash == "host") {
+    boolHost = true;
+    myPeer = getPeerObj(host);
+    await myPeerOpen(myPeer);
+    hostId = myPeer.id;
+    window.location.href = base + "#" + hostId + "/host";
+    return;
+  }
+
+  // If there is host and type is not host, then the type is the friend peerId
+  // www.kool.com#<host id>/<friend id>
+  if (host && slash && slash !== "host") {
+    boolHost = false;
+    myPeer = getPeerObj(slash);
+    await myPeerOpen(myPeer);
+    hostId = host;
+    window.location.href = base + "#" + hostId + "/" + myPeer.id;
+    return;
+  }
+
+  // Otherwise you are friend, so get your peer obj (id=null)
+  // www.kool.cam#<host id>
+  boolHost = false;
+  myPeer = getPeerObj();
+  await myPeerOpen(myPeer);
+  hostId = host;
+  window.location.href = base + "#" + hostId + "/" + myPeer.id;
+  return;
 };
 
 const addVideoStream = (peerId, stream, videoGrid, hostId) => {

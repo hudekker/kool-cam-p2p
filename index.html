@@ -16,24 +16,76 @@
   <div class="chat-heading">
     <div class="top-line">
       <h1 class="title" id="title">Kool . Cam</h1>
-      <button class="btn-help">?</button>
+      <button id="btn-help" class="btn-help">?</button>
       <!-- <button id="btn-add-user" class="add-user">Call</button> -->
     </div>
   </div>
 
   <div id="video-grid"></div>
 
-  <!-- popup modal -->
-  <div id="add-user-modal" class="modal modal-hide">
+  <!-- popup modal for help-->
+  <div id="modal-help" class="modal modal-hide">
     <div class="modal-content">
-      <span id="close" class="close">&times;</span>
+      <span id="modal-help-close" class="close">&times;</span>
+      <h3 class="modal-help-title">Welcome to Kool.cam</h3>
+      <p class="modal-desc">Kool.cam is a free, private chat app that allows people to chat without a server in
+        the middle. People are directly connected together and all chat information is
+        transmitted person-to-person without the use of a server. This is known as a "peer-to-peer"
+        network</p>
+      <div id="modal-help-host">
+        <p class="modal-desc">You are the host of this chat. To add your friends (up
+          to 3) to the
+          chat send them the following
+          friend link and ask them to click on it to join your hosted chat.</p>
+        <p class="modal-desc">There are two links: friend and host. </p>
+        <ul>
+          <li id="ptnr-link" class="modal-desc"></li>
+          <li id="host-link" class="modal-desc"></li>
+        </ul>
+
+        <p class="modal-desc">Host reminders</p>
+        <ul class="modal-desc">
+          <li>Chats can have up to 4 people total.</li>
+          <li>The friend and host links are yours forever and you may resuse them again and again. Alternatively, if you
+            want
+            new links each time you chat then whenever you
+            visit www.kool.cam you will be given a new pair of friend and host links. </li>
+          <li>If you want to chat at a
+            later time, you may email or text message the above friend link to your friends and then chat at a
+            scheduled
+            time.</li>
+          <li>If you leave now and wish to re-enter as the host, please save this host link. When you want to re-enter
+            as the host, just copy the host link below and paste it into your browser address field (browser search
+            line).
+          </li>
+          <li>As the host you will need to first enter the chat before you friends may join in.</li>
+          <li>When you exit the chat, all your friends are disconnected and the chat ends.
+          </li>
+          <li>Clicking on the video images will reveal additional control functions</li>
+        </ul>
+      </div>
+      <div class="modal-hide">
+        <p>You may optionally enter your name (nickname) below</p>
+        <form id="form-help" class="form-control" action="">
+          <label for="input-name-help" class="form-label">Name</label>
+          <input id="input-name-help" class="form-input" autocomplete="off" />
+        </form>
+        <button id="btn-modal-help" class="btn-form-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- popup modal for video-->
+  <div id="modal-video" class="modal modal-hide">
+    <div class="modal-content">
+      <span id="modal-video-close" class="close">&times;</span>
       <h3 id="peer-id"></h3>
-      <p>To change your name, please enter a nickname below</p>
-      <form id="form-partner-id" class="form-control" action="">
-        <label for="input-partner-id" class="form-label">Name</label>
-        <input id="input-partner-id" class="form-input" autocomplete="off" />
+      <p>Please enter a nickname below</p>
+      <form id="form-video" class="form-control" action="">
+        <label for="input-name-video" class="form-label">Name</label>
+        <input id="input-name-video" class="form-input" autocomplete="off" />
       </form>
-      <button id="btn-pic-form-ok" class="btn-form-ok">OK</button>
+      <button id="btn-modal-video" class="btn-form-ok">OK</button>
     </div>
   </div>
 
