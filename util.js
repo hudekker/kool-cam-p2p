@@ -52,7 +52,7 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
     p.innerHTML = `<i class="fa-solid fa-ghost"></i> Host`;
   } else {
     // p.innerHTML = `<i class="fa-solid fa-user-secret"></i> Person #${numUser}`;
-    p.innerHTML = `<i class="fa-solid fa-user-secret"></i> ${peerId}`;
+    p.innerHTML = `<i class="fa-solid fa-user"></i> ${peerId}`;
   }
 
   div.append(video);

@@ -31,15 +31,6 @@
   font-family: "Creepster", cursive;
 } */
 
-.title {
-  text-align: center;
-  margin: 0;
-  padding: 10px;
-  color: var(--dracula-pink);
-  font-family: "Creepster", cursive;
-  width: 100%;
-}
-
 .chat-heading {
   background-color: var(--dracula-black);
 }
@@ -47,16 +38,27 @@
 .top-line {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  width: 600px;
+  /* width: 600px;
+  margin: auto; */
 }
 
-.help {
-  border-radius: 50%;
+.title {
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+  /* width: 100%; */
+  color: var(--dracula-pink);
+  font-family: "Creepster", cursive;
+}
+.btn-help {
+  border-radius: 10px;
   background-color: var(--dracula-yellow);
-  padding: 5px 10px;
-  position: absolute;
+  padding: 5px 20px;
+  box-shadow: 0.5px 0.5px 1px var(--dracula-dark-black);
+  font-family: "Creepster", cursive;
+  /* position: absolute; */
 }
 
 span.dracula-red {
