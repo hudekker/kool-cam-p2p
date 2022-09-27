@@ -1,3 +1,13 @@
+const pageAccessedByReload =
+  (window.performance.navigation && window.performance.navigation.type === 1) ||
+  window.performance
+    .getEntriesByType("navigation")
+    .map((nav) => nav.type)
+    .includes("reload");
+
+if (pageAccessedByReload) {
+  // window.location.href = document.URL.split("#")[0];
+}
 // Use async wrapper because there are awaits
 (async () => {
   // Initialize your own peer object
@@ -30,27 +40,28 @@
   // Host and Peers (3 or more) receive call video request from peer(s).
   myPeer.on("call", receiveCallRequest);
 
-  // formPartnerId.addEventListener("submit", function (e) {
-  //   e.preventDefault();
-  // });
+  // Modal
+  formPartnerId.addEventListener("submit", function (e) {
+    e.preventDefault();
+  });
 
-  // // When the user clicks the button, open the modal
+  // When the user clicks the button, open the modal
   // btnAddUser.onclick = function () {
   //   document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
   //   modal.classList.remove("modal-hide");
   // };
 
-  // // When the user clicks on <span> (x), close the modal
-  // document.querySelector("#close").onclick = function () {
-  //   modal.classList.add("modal-hide");
-  // };
+  // When the user clicks on <span> (x), close the modal
+  document.querySelector("#close").onclick = function () {
+    modal.classList.add("modal-hide");
+  };
 
-  // // When the user clicks anywhere outside of the modal, close it
-  // window.onclick = function (event) {
-  //   if (event.target == modal) {
-  //     modal.classList.add("modal-hide");
-  //   }
-  // };
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.classList.add("modal-hide");
+    }
+  };
 
   // btnPartnerId.onclick = function () {
   //   ptnrPeerId = document.querySelector("#input-partner-id").value;
@@ -58,35 +69,27 @@
   //   modal.classList.add("modal-hide");
   // };
 
-  // window.onbeforeunload = function () {
-  //   alert("window is closing!");
-  // };
-
-  // document.querySelector("body").addEventListener("click", (event) => {
-  //   if (event.target.tagName == "VIDEO") {
-  //     // calls.forEach((el) => {
-  //     //   if (el.peer === event.target.dataset.peerId) {
-  //     //     debugger;
-  //     //     el.close();
-  //     //     console.log(`Closing call for ${el.peer}`);
-  //     //   }
-  //     // });
-
-  //     conns.forEach((el) => {
-  //       // if (el.peer === event.target.dataset.peerId) {
-  //       //   debugger;
-  //       el.close();
-  //       console.log(`Closing call for ${el.peer}`);
-  //       // }
-  //     });
-  //   }
-  // });
+  document.querySelector("body").addEventListener("click", (event) => {
+    if (event.target.tagName == "VIDEO") {
+      document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
+      modal.classList.remove("modal-hide");
+      // calls.forEach((el) => {
+      //   if (el.peer === event.target.dataset.peerId) {
+      //     debugger;
+      //     el.close();
+      //     console.log(`Closing call for ${el.peer}`);
+      //   }
+      // });
+    }
+  });
 
   const beforeUnloadListener = (event) => {
     event.preventDefault();
+    document.URL = document.URL.split("#")[0];
     conns.forEach((el) => {
       el.send({ key: "close", val: myPeer.id });
     });
+    window.location.href = document.URL.split("#")[0];
   };
 
   window.addEventListener("beforeunload", beforeUnloadListener, { capture: true });

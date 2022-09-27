@@ -12,7 +12,7 @@ let boolHost;
 let partnerId;
 let stream;
 let modal = document.querySelector("#add-user-modal");
-let btnAddUser = document.querySelector("#btn-add-user");
+// let btnAddUser = document.querySelector("#btn-add-user");
 let btnPartnerId = document.querySelector("#btn-partner-id");
 
 const videoGrid = document.getElementById("video-grid");

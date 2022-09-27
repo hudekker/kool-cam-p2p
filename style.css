@@ -37,6 +37,7 @@
   padding: 10px;
   color: var(--dracula-pink);
   font-family: "Creepster", cursive;
+  width: 100%;
 }
 
 .chat-heading {
@@ -46,8 +47,16 @@
 .top-line {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+  width: 600px;
+}
+
+.help {
+  border-radius: 50%;
+  background-color: var(--dracula-yellow);
+  padding: 5px 10px;
+  position: absolute;
 }
 
 span.dracula-red {
