@@ -31,8 +31,8 @@ if (boolRefresh) {
     callPeerVideo(myPeer, hostId, stream, hostId);
     callPeerData(myPeer, hostId, stream, hostId);
   } else {
-    document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
-    document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
+    document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam#${hostId}`;
+    document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam#${hostId}/host`;
   }
 
   // Host is the only one who receives data connection request
