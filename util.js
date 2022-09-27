@@ -20,10 +20,14 @@ const getHostBoolPeerObj = async (myId) => {
   // console.log(`My peer id = ${myPeer.id}`);
   // https://kool.cam is the base
   let base = document.URL.split("#")[0];
-  base = "https://kool.cam";
+  if (base === "https://kool.com/") base = "https://kool.com";
+
+  // base = "https://kool.cam";
   let hash = document.URL.split("#")[1];
   let host = hash?.split("/")[0];
   let slash = hash?.split("/")[1];
+
+  debugger;
 
   // If there is no host suffix (www.kool.cam), then it's first time and you are the host
   // www.kool.cam
