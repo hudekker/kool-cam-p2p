@@ -17,10 +17,8 @@ const myPeerOpen = (myPeer) => {
 const getHostBoolPeerObj = async (myId) => {
   // myPeer = getPeerObj();
   // await myPeerOpen(myPeer);
-  // console.log(`My peer id = ${myPeer.id}`);
-  // https://kool.cam is the base
   let base = document.URL.split("#")[0];
-  if (base === "https://kool.cam/") base = "https://kool.cam";
+  // if (base === "https://kool.cam/") base = "https://kool.cam";
 
   // base = "https://kool.cam";
   let hash = document.URL.split("#")[1];
@@ -73,7 +71,11 @@ const getHostBoolPeerObj = async (myId) => {
 };
 
 const addVideoStream = (peerId, stream, videoGrid, hostId) => {
-  if (document.querySelector(`video[data-peer-id="${peerId}"]`)) return;
+  console.log("inside addVideoStream");
+  if (document.querySelector(`video[data-peer-id="${peerId}"]`)) {
+    console.log("inside addVideoStream but return since = peerId");
+    return;
+  }
 
   const div = document.createElement("div");
   div.dataset.order = numUser;
@@ -94,6 +96,7 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
     p.innerHTML = `<i class="fa-solid fa-user"></i> ${peerId}`;
   }
 
+  console.log("append addVideoStream");
   div.append(video);
   div.append(p);
   videoGrid.append(div);

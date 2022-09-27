@@ -83,7 +83,7 @@ body {
   overflow: hidden;
 }
 
-div .name {
+.name {
   background-color: var(--dracula-light-blue);
   color: var(--dracula-black);
   font-size: 18px;

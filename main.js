@@ -96,7 +96,7 @@ if (boolRefresh) {
     conns.forEach((el) => {
       el.send({ key: "close", val: myPeer.id });
     });
-    window.location.href = document.URL.split("#")[0];
+    // window.location.href = document.URL.split("#")[0];
   };
 
   window.addEventListener("beforeunload", beforeUnloadListener, { capture: true });
