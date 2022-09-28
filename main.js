@@ -34,7 +34,7 @@ if (boolRefresh) {
     document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
     // document.querySelector("#ptnr-link").innerHTML = `hi`;
     document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
-    document.querySelector("#host-link").innerHTML = `hi2`;
+    document.querySelector("#host-link").innerText = `hi2`;
   }
 
   // Host is the only one who receives data connection request
