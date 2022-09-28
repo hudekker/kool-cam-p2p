@@ -32,7 +32,7 @@ if (boolRefresh) {
     callPeerData(myPeer, hostId, stream, hostId);
   } else {
     document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
-    document.querySelector("#ptnr-link").innerHTML = `hi`;
+    // document.querySelector("#ptnr-link").innerHTML = `hi`;
     document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
     document.querySelector("#host-link").innerHTML = `hi2`;
   }
