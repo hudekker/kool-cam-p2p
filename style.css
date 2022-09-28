@@ -25,6 +25,7 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
 /* h1 {
   text-align: center;
   margin: 0;
@@ -54,6 +55,7 @@
   color: var(--dracula-pink);
   font-family: "Creepster", cursive;
 }
+
 .btn-help {
   border-radius: 10px;
   background-color: var(--dracula-yellow);
@@ -100,14 +102,14 @@ body {
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(2, 300px);
-  grid-auto-rows: 300px;
+  /* grid-auto-rows: 300px; */
   gap: 50px;
   justify-content: center;
 }
 
 video {
   width: 100%;
-  height: 100%;
+  height: 300px;
   object-fit: cover;
   border-radius: 10px;
   border: solid 5px var(--dracula-green);
@@ -126,7 +128,7 @@ video {
   outline: none;
 }
 
-#form-msg > button {
+#form-msg>button {
   background: var(--dracula-orange);
   border: none;
   padding: 0 1rem;
@@ -145,9 +147,11 @@ video {
   outline: none;
   color: var(--dracula-black);
 }
+
 li#ptnr-link {
   margin-bottom: 20px;
 }
+
 .highlight {
   background: var(--dracula-yellow);
 }
@@ -155,15 +159,23 @@ li#ptnr-link {
 @media only screen and (max-width: 650px) {
   #video-grid {
     grid-template-columns: repeat(2, 200px);
-    grid-auto-rows: 200px;
+    /* grid-auto-rows: 200px; */
     gap: 20px;
+  }
+
+  video {
+    height: 200px;
   }
 }
 
 @media only screen and (max-width: 450px) {
   #video-grid {
     grid-template-columns: repeat(1, 200px);
-    grid-auto-rows: 200px;
+    /* grid-auto-rows: 200px; */
     gap: 20px;
+  }
+
+  video {
+    height: 200px;
   }
 }
