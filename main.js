@@ -31,26 +31,27 @@ if (boolRefresh) {
     callPeerVideo(myPeer, hostId, stream, hostId);
     callPeerData(myPeer, hostId, stream, hostId);
   } else {
-    let ul = document.querySelector('#links');
-    // <li id="ptnr-link" class="modal-desc"></li>
-    // <li id="host-link" class="modal-desc"></li>
-    let l1 = document.createElement('li');
-    let l2 = document.createElement('li');
+    // let ul = document.querySelector('#links');
+    // // <li id="ptnr-link" class="modal-desc"></li>
+    // // <li id="host-link" class="modal-desc"></li>
+    // let l1 = document.createElement('li');
+    // let l2 = document.createElement('li');
 
-    l1.classList.add('modal-desc');
-    l1.id = 'ptnr-link'
-    l1.innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
+    // l1.classList.add('modal-desc');
+    // l1.id = 'ptnr-link'
+    // l1.innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
 
-    l2.classList.add('modal-desc');
-    l2.id = 'host-link'
-    l2.innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
+    // l2.classList.add('modal-desc');
+    // l2.id = 'host-link'
+    // l2.innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
 
-    ul.append(l1);
-    ul.append(l2);
+    // ul.append(l1);
+    // ul.append(l2);
 
-    // document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
-    // document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
   }
+
+  document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
+  document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
 
   // Host is the only one who receives data connection request
   myPeer.on("connection", receiveConnRequest);
