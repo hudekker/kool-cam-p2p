@@ -20,6 +20,7 @@ let btnModalHelp = document.querySelector("#btn-modal-help");
 let btnModalVideo = document.querySelector("#btn-modal-video");
 let formHelp = document.querySelector("#form-help");
 let formVideo = document.querySelector("#form-video");
+let myNickname = document.querySelector("#my-nickname");
 
 const videoGrid = document.getElementById("video-grid");
 // let peers = new Map();

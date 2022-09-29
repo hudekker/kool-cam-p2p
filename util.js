@@ -68,12 +68,12 @@ const getHostBoolPeerObj = async (myId) => {
   return;
 };
 
-const updateHelpPtnr = () => {
+const updateHelpModalPtnr = () => {
   document.querySelector("#modal-help-ptnr").classList.remove("modal-hide");
   document.querySelector("#ptnr-link").innerHTML = `To add friends to the chat, send them this link <br><span class=highlight>https://kool.cam/#${hostId}`;
 };
 
-const updateHelpHost = () => {
+const updateHelpModalHost = () => {
   document.querySelector("#modal-help-host").classList.remove("modal-hide");
   document.querySelector("#ptnr-link2").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
   document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
@@ -87,6 +87,7 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
   }
 
   const div = document.createElement("div");
+  div.dataset.peerId = peerId;
   div.dataset.order = numUser;
   div.classList.add("box");
 
@@ -99,10 +100,10 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
   p.classList.add("name");
 
   if (peerId == hostId) {
-    p.innerHTML = `<i class="fa-solid fa-ghost"></i> Host`;
+    p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>Host</span>`;
   } else {
     // p.innerHTML = `<i class="fa-solid fa-user-secret"></i> Person #${numUser}`;
-    p.innerHTML = `<i class="fa-solid fa-user"></i> ${peerId}`;
+    p.innerHTML = `<i class="fa-solid fa-user"></i> <span class='nickname'>${peerId}</span>`;
   }
 
   console.log("append addVideoStream");
@@ -157,6 +158,15 @@ const callPeerData = async (myPeer, partnerId, stream, hostId) => {
       console.log(`Peer ${data.val} closed`);
       removePeer(data.val);
     }
+
+    if (data.key == "nickname") {
+      let { id, name } = data.val;
+      console.log(`received id, name = `, id, name);
+      let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
+      if (nicknameElement) {
+        nicknameElement.innerText = name;
+      }
+    }
   });
 
   conn.on("close", () => {
@@ -201,6 +211,15 @@ const receiveConnRequest = async (conn) => {
     if (data.key == "close") {
       console.log(`Peer ${data.val} closed`);
       removePeer(data.val);
+    }
+
+    if (data.key == "nickname") {
+      let { id, name } = data.val;
+      console.log(`received id, name = `, id, name);
+      let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
+      if (nicknameElement) {
+        nicknameElement.innerText = name;
+      }
     }
   });
 

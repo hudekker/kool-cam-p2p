@@ -29,11 +29,11 @@ if (boolRefresh) {
 
   // If you are not the host, then video call and data call the host
   if (!boolHost) {
-    updateHelpPtnr();
+    updateHelpModalPtnr();
     callPeerVideo(myPeer, hostId, stream, hostId);
     callPeerData(myPeer, hostId, stream, hostId);
   } else {
-    updateHelpHost();
+    updateHelpModalHost();
   }
 
   // Host is the only one who receives data connection request
@@ -74,11 +74,25 @@ if (boolRefresh) {
     }
   };
 
-  // btnPartnerId.onclick = function () {
-  //   ptnrPeerId = document.querySelector("#input-partner-id").value;
-  //   if (ptnrPeerId !== "") callPeerVideo(ptnrPeerId);
-  //   modal.classList.add("modal-hide");
-  // };
+  btnModalVideo.onclick = function () {
+    myNickname = document.querySelector("#my-nickname").value;
+    console.log(`my nickname is`, myNickname);
+    let nicknameSpan = document.querySelector(`div[data-peer-id="${myPeer.id}"] span`);
+    if (nicknameSpan) {
+      nicknameSpan.innerText = myNickname;
+    }
+    modalVideo.classList.add("modal-hide");
+
+    conns.forEach((conn) => {
+      // check to see if not yourself?
+      if (conn.peer === myPeer.id) {
+        console.log(`conn.peer === myPeer.id`);
+      }
+      conn.send({ key: "nickname", val: { id: myPeer.id, name: myNickname } });
+    });
+    // if (myNickname !== "") callPeerVideo(ptnrPeerId);
+    // modal.classList.add("modal-hide");
+  };
 
   btnHelp.addEventListener("click", () => {
     modalHelp.classList.remove("modal-hide");
