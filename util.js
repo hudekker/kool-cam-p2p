@@ -202,6 +202,8 @@ const receiveConnRequest = async (conn) => {
     conn.send({ key: "peers", val: peers });
   }
 
+  conn.send({ key: "nickname", val: { id: myPeer.id, name: myNickname } });
+
   // Keep this event listener open, will receive data multiple times
   conn.on("data", (data) => {
     if (data.key == "peer-close") {
