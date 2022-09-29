@@ -115,8 +115,9 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
 };
 
 const removePeer = (peerId) => {
+  debugger;
   console.log(`Remove peer ${peerId}`);
-  document.querySelector(`[data-peer-id="${peerId}"]`)?.parentElement?.remove();
+  document.querySelector(`div[data-peer-id="${peerId}"]`)?.remove();
 };
 
 const connOpen = (conn) => {
