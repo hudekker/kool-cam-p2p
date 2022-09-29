@@ -68,10 +68,16 @@ const getHostBoolPeerObj = async (myId) => {
   return;
 };
 
-const updateHelp = () => {
-  document.querySelector("#ptnr-link").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
+const updateHelpPtnr = () => {
+  document.querySelector("#modal-help-ptnr").classList.remove("modal-hide");
+  document.querySelector("#ptnr-link").innerHTML = `To add friends to the chat, send them this link <br><span class=highlight>https://kool.cam/#${hostId}`;
+};
+
+const updateHelpHost = () => {
+  document.querySelector("#modal-help-host").classList.remove("modal-hide");
+  document.querySelector("#ptnr-link2").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
   document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
-}
+};
 
 const addVideoStream = (peerId, stream, videoGrid, hostId) => {
   console.log("inside addVideoStream");

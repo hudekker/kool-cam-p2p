@@ -14,7 +14,6 @@ if (boolRefresh) {
 
   // Connect to host
   await getHostBoolPeerObj();
-  updateHelp();
 
   console.log(`Host Id = ${hostId}`);
   // boolHost = hostId === myPeer.id ? true : false;
@@ -30,8 +29,11 @@ if (boolRefresh) {
 
   // If you are not the host, then video call and data call the host
   if (!boolHost) {
+    updateHelpPtnr();
     callPeerVideo(myPeer, hostId, stream, hostId);
     callPeerData(myPeer, hostId, stream, hostId);
+  } else {
+    updateHelpHost();
   }
 
   // Host is the only one who receives data connection request

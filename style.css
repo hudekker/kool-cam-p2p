@@ -128,7 +128,7 @@ video {
   outline: none;
 }
 
-#form-msg>button {
+#form-msg > button {
   background: var(--dracula-orange);
   border: none;
   padding: 0 1rem;
@@ -148,7 +148,7 @@ video {
   color: var(--dracula-black);
 }
 
-li#ptnr-link {
+li#ptnr-link2 {
   margin-bottom: 20px;
 }
 
