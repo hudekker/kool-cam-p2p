@@ -33,18 +33,17 @@
   color: var(--dracula-orange);
   font-family: "Creepster", cursive;
 } */
+.container {
+  width: 650px;
+  margin: auto;
+}
 
 .chat-heading {
   background-color: var(--dracula-black);
-}
-
-.top-line {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  /* width: 600px;
-  margin: auto; */
 }
 
 .title {
@@ -54,6 +53,13 @@
   /* width: 100%; */
   color: var(--dracula-pink);
   font-family: "Creepster", cursive;
+}
+
+.btn-menu {
+  background-color: var(--dracula-yellow);
+  padding: 5px 10px;
+  box-shadow: 0.5px 0.5px 1px var(--dracula-dark-black);
+  border-radius: 5 px;
 }
 
 .btn-help {
