@@ -20,7 +20,7 @@ if (boolRefresh) {
   // Open up your video stream and add it to the screen
   myStream = await navigator.mediaDevices.getUserMedia({
     video: { width: 1280, height: 720 },
-    audio: false,
+    audio: true,
   });
 
   if (boolHost) {
