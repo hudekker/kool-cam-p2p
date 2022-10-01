@@ -10,42 +10,37 @@ if (boolRefresh) {
 }
 // Use async wrapper because there are awaits
 (async () => {
-  // Initialize your own peer object
-
-  // Connect to host
-  await getHostBoolPeerObj();
+  // Initialize your own peer object and get the host id
+  await getHostIdMyPeerObj();
 
   console.log(`Host Id = ${hostId}`);
-  // boolHost = hostId === myPeer.id ? true : false;
+  console.log(`My peer Id = ${myPeer.id}`);
   console.log(`boolHost = ${boolHost}`);
 
   // Open up your video stream and add it to the screen
-  stream = await navigator.mediaDevices.getUserMedia({
+  myStream = await navigator.mediaDevices.getUserMedia({
     video: { width: 1280, height: 720 },
     audio: false,
   });
 
-  addVideoElement(myPeer.id, stream, videoGrid, hostId);
+  // peers.push({ id: myPeer.id, nickname: "Host", order: 0, host: true });
+
+  addVideoElement(myPeer.id, myStream);
 
   updateHelpModalText();
 
-  // If you are not the host, then video call and data call the host
+  // Partners initiate request to host
+  // think about a timeout loop every 3 seconds if ptnr arrives before host?
   if (!boolHost) {
-    sendVideoRequest(myPeer, hostId, stream, hostId);
-    sendDataRequest(myPeer, hostId, stream, hostId);
+    sendDataRequest(myPeer, hostId);
+    sendVideoRequest(myPeer, hostId);
   }
 
-  // Host is the only one who receives data connection request
-  myPeer.on("connection", receiveDataRequest);
+  // Handle data request events
+  myPeer.on("connection", handleDataEvents);
 
-  // Host and Peers (3 or more) receive call video request from peer(s).
+  // Handle video request events
   myPeer.on("call", receiveVideoRequest);
-
-  // When the user clicks the button, open the modal
-  // btnAddUser.onclick = function () {
-  //   document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
-  //   modal.classList.remove("modal-hide");
-  // };
 
   // Modals
   formHelp.addEventListener("submit", function (e) {
@@ -92,7 +87,7 @@ if (boolRefresh) {
     conns
       .filter((el) => el.peer !== myPeer.id)
       .forEach((conn) => {
-        conn.send({ key: "nickname", val: { id: myPeer.id, name: myNickname } });
+        conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
       });
 
     // Close the video modal
@@ -104,6 +99,10 @@ if (boolRefresh) {
     event.preventDefault();
     document.URL = document.URL.split("#")[0];
     conns.forEach((el) => el.send({ key: "close", val: myPeer.id }));
+
+    if (boolHost) {
+      conns.forEach((el) => el.send({ key: "host-close", val: myPeer.id }));
+    }
   };
 
   window.addEventListener("beforeunload", beforeUnloadHandler, { capture: true });

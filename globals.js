@@ -11,7 +11,7 @@ let myPeer;
 let hostId;
 let boolHost;
 let partnerId;
-let stream;
+let myStream;
 let body = document.querySelector("body");
 let btnHelp = document.querySelector("#btn-help");
 let modalHelp = document.querySelector("#modal-help");

@@ -14,7 +14,7 @@ const myPeerOpen = (myPeer) => {
   });
 };
 // Determine if you are the host
-const getHostBoolPeerObj = async (myId) => {
+const getHostIdMyPeerObj = async (myId) => {
   // myPeer = getPeerObj();
   // await myPeerOpen(myPeer);
   let base = document.URL.split("#")[0];
@@ -79,16 +79,30 @@ const updateHelpModalText = () => {
   }
 };
 
-const addVideoElement = (peerId, stream, videoGrid, hostId) => {
+const addVideoElement = (peerId, stream) => {
   console.log("inside addVideoElement");
   if (document.querySelector(`video[data-peer-id="${peerId}"]`)) {
     console.log("inside addVideoElement but return since = peerId");
     return;
   }
 
+  // Existing elements
+  let a = document.querySelectorAll("div[data-order]");
+  a.forEach((el) => {
+    let b = peers?.filter((el2) => el2.id === el.dataset.peerId)[0]?.order;
+    if (b) {
+      el.dataset.order = peers?.filter((el2) => el2.id === el.dataset.peerId)[0]?.order;
+    }
+  });
+
+  let numOrder = peers?.filter((el) => el.id === peerId)[0]?.order;
+  if (!numOrder) {
+    numOrder = 0;
+  }
+
   const div = document.createElement("div");
   div.dataset.peerId = peerId;
-  div.dataset.order = numUser;
+  div.dataset.order = numOrder;
   div.classList.add("box");
 
   const video = document.createElement("video");
@@ -103,7 +117,9 @@ const addVideoElement = (peerId, stream, videoGrid, hostId) => {
     p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>Host</span>`;
   } else {
     // p.innerHTML = `<i class="fa-solid fa-user-secret"></i> Person #${numUser}`;
-    p.innerHTML = `<i class="fa-solid fa-user"></i> <span class='nickname'>${peerId}</span>`;
+    myNickname = `Friend ${numOrder}`;
+    p.innerHTML = `<i class="fa-solid fa-user"></i> <span class='nickname'>${myNickname}</span>`;
+    // updatePeersNickname(id, `Friend ${numOrder}`);
   }
 
   div.append(video);
@@ -117,6 +133,7 @@ const removePeer = (peerId) => {
   debugger;
   console.log(`Remove peer ${peerId}`);
   document.querySelector(`div[data-peer-id="${peerId}"]`)?.remove();
+  peers = [...peers.filter((el) => el.id != peerId)];
 };
 
 const connOpen = (conn) => {
@@ -127,122 +144,204 @@ const connOpen = (conn) => {
     });
   });
 };
-
-const sendDataRequest = async (myPeer, partnerId, stream, hostId) => {
-  // Create the conn
-  conn = myPeer.connect(partnerId);
-  conns.push(conn);
-  await connOpen(conn);
-
-  // Keep this event listener open, will receive data multiple times
-  conn.on("data", (data) => {
-    // This is NOT recursive because the check is for key == peers and this is only from host
-    if (data.key == "peers") {
-      let oldPeers = [...peers];
-      peers = [...data.val];
-
-      let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
-      newPeers = [...newPeers.filter((x) => x.id != myPeer.id)];
-
-      newPeers.forEach((el) => {
-        console.log(`Calling peer Id = ${el}`);
-        callPeerVideo(myPeer, el.id, stream, hostId);
-        callPeerData(myPeer, el.id, stream, hostId);
-      });
-    }
-
-    if (data.key == "close") {
-      console.log(`Peer ${data.val} closed`);
-      removePeer(data.val);
-    }
-
-    if (data.key == "nickname") {
-      let { id, name } = data.val;
-      console.log(`received id, name = `, id, name);
-      let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
-      if (nicknameElement) {
-        nicknameElement.innerText = name;
-      }
-    }
-  });
-
-  conn.on("close", () => {
-    console.log(`${partnerId} left the chat`, "admin-msg");
-    removePeer(partnerId);
-  });
-
-  conn.on("error", (err) => {
-    console.log(`Error ${err.type} `);
-    removePeer(partnerId);
-  });
-};
-
-// Connect to the host
-const sendVideoRequest = (myPeer, ptnrPeerId, stream, hostId) => {
-  // Get the call object
-  const call = myPeer.call(ptnrPeerId, stream, { metadata: "partner nickname" });
-  calls.push(call);
-
-  // peerjs on event 'stream', partner peer send you his stream
-  call.on("stream", (ptnrStream) => {
-    addVideoElement(ptnrPeerId, ptnrStream, videoGrid, hostId);
-  });
-};
-
-const receiveDataRequest = async (conn) => {
+const handleDataEvents = async (conn) => {
   // Wait for the connection to open
   conns.push(conn);
   await connOpen(conn);
 
-  // If you are the host then send peers array to peer
+  // If you are the host then send everyone the updated peers array to peer
   if (myPeer.id === hostId) {
-    conn.send({ key: "peers", val: peers });
+    // conn.send({ key: "peers", val: peers });
+    conns.forEach((el) => el.send({ key: "peers", val: peers }));
   }
 
-  conn.send({ key: "nickname", val: { id: myPeer.id, name: myNickname } });
+  // Do I need this?
+  // if (myNickname) {
+  //   conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
+  //   // if (myPeer.id === hostId) {
+  //   //   conn.send({ key: "peers", val: peers });
+  //   // }
+  // }
 
   // Keep this event listener open, will receive data multiple times
-  conn.on("data", (data) => {
-    if (data.key == "peer-close") {
-      removePeer(data.val);
-    }
+  conn.on("data", async (data) => {
+    switch (data.key) {
+      // Not recursive
+      case "peers":
+        let oldPeers = [...peers];
+        peers = [...data.val];
 
-    if (data.key == "close") {
-      console.log(`Peer ${data.val} closed`);
-      removePeer(data.val);
-    }
+        // Update display peers
+        debugger;
+        for (let i = 0; i < peers.length; i++) {
+          let span = document.querySelector(`div [data-peer-id=${peers[i].id}] span.nickname`);
+          span ? (span.innerText = peers[i].nickname) : null;
+        }
 
-    if (data.key == "nickname") {
-      let { id, name } = data.val;
-      console.log(`received id, name = `, id, name);
-      let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
-      if (nicknameElement) {
-        nicknameElement.innerText = name;
-      }
+        let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
+        newPeers = [...newPeers.filter((x) => x.id != myPeer.id)];
+
+        for (let i = 0; i < newPeers.length; i++) {
+          ptnrPeer = newPeers[i];
+          console.log(`Calling partner peer Id = ${ptnrPeer.id}`);
+
+          sendVideoRequest(myPeer, ptnrPeer.id);
+          sendDataRequest(myPeer, ptnrPeer.id);
+        }
+
+        break;
+
+      case "host-close":
+        removePeer(data.val);
+        conns.forEach((el) => el.send({ key: "close", val: myPeer.id }));
+        break;
+
+      case "close":
+        console.log(`Peer ${data.val} closed`);
+        removePeer(data.val);
+        break;
+
+      case "nickname":
+        let { id, nickname } = data.val;
+        console.log(`received id, name = `, id, nickname);
+        document.querySelector(`div[data-peer-id="${id}"] span`).innerText = nickname;
+
+        // If you are the host, update the peers array and send it out
+        debugger;
+        updatePeersNickname(id, nickname);
+
+        // let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
+        // if (nicknameElement) {
+        //   nicknameElement.innerText = name;
+        // }
+        break;
+
+      default:
+        console.log(`Unknown data.key ${data.key} from ${conn.peer}`);
+        break;
     }
   });
 
   conn.on("close", () => {
-    console.log(`${conn.peer} left the chat`);
+    console.log(`${conn.peer} left the chat`, "admin-msg");
     removePeer(conn.peer);
   });
+};
+
+const sendDataRequest = async (myPeer, ptnrId) => {
+  // Create the conn
+  let conn = myPeer.connect(ptnrId);
+
+  // conns.push(conn);
+  // await connOpen(conn);
+
+  await handleDataEvents(conn);
+  // // Keep this event listener open, will receive data multiple times
+  // conn.on("data", (data) => {
+  //   if (data.key == "peers") {
+  //     let oldPeers = [...peers];
+  //     peers = [...data.val];
+
+  //     let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
+  //     newPeers = [...newPeers.filter((x) => x.id != myPeer.id)];
+
+  //     newPeers.forEach((el) => {
+  //       console.log(`Calling peer Id = ${el}`);
+  //       sendVideoRequest(myPeer, el.id, stream, hostId);
+  //       sendDataRequest(myPeer, el.id, stream, hostId);
+  //     });
+  //   }
+
+  //   if (data.key == "close") {
+  //     console.log(`Peer ${data.val} closed`);
+  //     removePeer(data.val);
+  //   }
+
+  //   if (data.key == "nickname") {
+  //     let { id, name } = data.val;
+  //     console.log(`received id, name = `, id, name);
+  //     let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
+  //     if (nicknameElement) {
+  //       nicknameElement.innerText = name;
+  //     }
+  //   }
+  // });
+
+  // conn.on("close", () => {
+  //   console.log(`${partnerId} left the chat`, "admin-msg");
+  //   removePeer(partnerId);
+  // });
+};
+
+// Connect to the host
+const sendVideoRequest = (myPeer, ptnrPeerId) => {
+  // Get the call object
+  const call = myPeer.call(ptnrPeerId, myStream, { metadata: "partner nickname" });
+  calls.push(call);
+
+  // peerjs on event 'stream', partner peer send you his stream
+  call.on("stream", (ptnrStream) => {
+    addVideoElement(ptnrPeerId, ptnrStream);
+  });
+};
+
+const receiveDataRequest = async (conn) => {
+  // Keep this event listener open, will receive data multiple times
+  handleDataEvents(conn);
+
+  // conn.on("data", (data) => {
+  //   if (data.key == "peer-close") {
+  //     removePeer(data.val);
+  //   }
+
+  //   if (data.key == "close") {
+  //     console.log(`Peer ${data.val} closed`);
+  //     removePeer(data.val);
+  //   }
+
+  //   if (data.key == "nickname") {
+  //     let { id, name } = data.val;
+  //     console.log(`received id, name = `, id, name);
+  //     let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
+  //     if (nicknameElement) {
+  //       nicknameElement.innerText = name;
+  //     }
+  //   }
+  // });
+
+  // conn.on("close", () => {
+  //   console.log(`${conn.peer} left the chat`, `admin-msg`);
+  //   removePeer(conn.peer);
+  // });
 };
 
 const receiveVideoRequest = (call) => {
   // partner Peer Id
   const ptnrPeerId = call.peer;
-  let ptnrNickname = call.metadata;
+  let orderNum = peers.length + 1;
+  let ptnrNickname = `Friend ${orderNum}`;
+  // let ptnrNickname = call.metadata;
 
   // Keep track of peers, this is sent by host to peers on data requests
   if (boolHost) {
-    peers.push({ id: ptnrPeerId, nickname: ptnrNickname, order: numUser, host: false });
+    peers = peers.filter((el) => el.id != ptnrPeerId);
+    peers.push({ id: ptnrPeerId, nickname: ptnrNickname, order: orderNum, host: false });
   }
 
   // Answer the call and give them your stream
-  call.answer(stream);
+  call.answer(myStream);
 
   // peerjs on event 'stream', partner peer send you his stream
   call.on("stream", (ptnrStream) => {
-    addVideoElement(ptnrPeerId, ptnrStream, videoGrid, hostId);
+    addVideoElement(ptnrPeerId, ptnrStream);
   });
+};
+
+const updatePeersNickname = (id, nickname) => {
+  peers = [
+    ...peers.map((el) => {
+      el.id === id ? (el.nickname = nickname) : null;
+      return el;
+    }),
+  ];
 };
