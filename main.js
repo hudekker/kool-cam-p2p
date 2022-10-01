@@ -24,7 +24,7 @@ if (boolRefresh) {
   });
 
   if (boolHost) {
-    peers.push({ id: myPeer.id, nickname: "Host2", order: 0, host: true });
+    peers.push({ id: myPeer.id, nickname: "Host", order: 0, host: true });
   }
 
   addVideoElement(myPeer.id, myStream);
