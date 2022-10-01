@@ -140,6 +140,7 @@ const removePeer = (peerId) => {
   console.log(`Remove peer ${peerId}`);
   document.querySelector(`div[data-peer-id="${peerId}"]`)?.remove();
   peers = [...peers.filter((el) => el.id != peerId)];
+  conns = [...conns.filter((el) => el.peer != peerId)];
 };
 
 const connOpen = (conn) => {
@@ -252,7 +253,7 @@ const receiveDataRequest = async (conn) => {
 const receiveVideoRequest = (call) => {
   // partner Peer Id
   const ptnrPeerId = call.peer;
-  let orderNum = peers.length + 1;
+  let orderNum = peers.length;
   let ptnrNickname = `Friend ${orderNum}`;
   // let ptnrNickname = call.metadata;
 
