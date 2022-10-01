@@ -23,7 +23,9 @@ if (boolRefresh) {
     audio: false,
   });
 
-  // peers.push({ id: myPeer.id, nickname: "Host", order: 0, host: true });
+  if (boolHost) {
+    peers.push({ id: myPeer.id, nickname: "Host2", order: 0, host: true });
+  }
 
   addVideoElement(myPeer.id, myStream);
 
@@ -82,6 +84,8 @@ if (boolRefresh) {
     // Set the nickname
     myNickname = document.querySelector("#my-nickname").value;
     document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText = myNickname;
+
+    updatePeersNickname(myPeer.id, myNickname);
 
     // Send the nickname to the ptnrs
     conns

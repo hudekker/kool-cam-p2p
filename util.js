@@ -137,7 +137,6 @@ const addVideoElement = (peerId, stream) => {
 };
 
 const removePeer = (peerId) => {
-  debugger;
   console.log(`Remove peer ${peerId}`);
   document.querySelector(`div[data-peer-id="${peerId}"]`)?.remove();
   peers = [...peers.filter((el) => el.id != peerId)];
@@ -153,6 +152,10 @@ const connOpen = (conn) => {
 };
 const handleDataEvents = async (conn) => {
   // Wait for the connection to open
+  if (conns.indexOf(conn) != -1) {
+    debugger;
+  }
+  conns = [...conns.filter((el) => el.peer != conn.peer)];
   conns.push(conn);
   await connOpen(conn);
 
@@ -182,6 +185,8 @@ const handleDataEvents = async (conn) => {
 
         for (let i = 0; i < newPeers.length; i++) {
           ptnrPeer = newPeers[i];
+          if (ptnrPeer.id == myPeer.id) continue;
+          if (ptnrPeer.id == hostId) continue;
           console.log(`Calling partner peer Id = ${ptnrPeer.id}`);
 
           sendVideoRequest(myPeer, ptnrPeer.id);
