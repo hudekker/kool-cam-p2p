@@ -25,22 +25,27 @@ if (boolRefresh) {
     audio: false,
   });
 
-  addVideoStream(myPeer.id, stream, videoGrid, hostId);
+  addVideoElement(myPeer.id, stream, videoGrid, hostId);
+
+  updateHelpModalText();
 
   // If you are not the host, then video call and data call the host
   if (!boolHost) {
-    updateHelpModalPtnr();
-    callPeerVideo(myPeer, hostId, stream, hostId);
-    callPeerData(myPeer, hostId, stream, hostId);
-  } else {
-    updateHelpModalHost();
+    sendVideoRequest(myPeer, hostId, stream, hostId);
+    sendDataRequest(myPeer, hostId, stream, hostId);
   }
 
   // Host is the only one who receives data connection request
-  myPeer.on("connection", receiveConnRequest);
+  myPeer.on("connection", receiveDataRequest);
 
   // Host and Peers (3 or more) receive call video request from peer(s).
-  myPeer.on("call", receiveCallRequest);
+  myPeer.on("call", receiveVideoRequest);
+
+  // When the user clicks the button, open the modal
+  // btnAddUser.onclick = function () {
+  //   document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
+  //   modal.classList.remove("modal-hide");
+  // };
 
   // Modals
   formHelp.addEventListener("submit", function (e) {
@@ -50,13 +55,20 @@ if (boolRefresh) {
     e.preventDefault();
   });
 
-  // When the user clicks the button, open the modal
-  // btnAddUser.onclick = function () {
-  //   document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
-  //   modal.classList.remove("modal-hide");
-  // };
+  // Open the video modal
+  body.addEventListener("click", (event) => {
+    if (event.target.tagName == "VIDEO") {
+      document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
+      modalVideo.classList.remove("modal-hide");
+    }
+  });
 
-  // When the user clicks on <span> (x), close the modal
+  // Open the help modal
+  btnHelp.addEventListener("click", () => {
+    modalHelp.classList.remove("modal-hide");
+  });
+
+  // Close the modals (click on the x)
   modalHelp.querySelector("#modal-help-close").onclick = function () {
     modalHelp.classList.add("modal-hide");
   };
@@ -66,53 +78,33 @@ if (boolRefresh) {
 
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function (event) {
-    if (event.target.id == "modal-help") {
-      modalHelp.classList.add("modal-hide");
-    }
-    if (event.target.id == "modal-video") {
-      modalVideo.classList.add("modal-hide");
-    }
+    event.target.id == "modal-help" ? modalHelp.classList.add("modal-hide") : null;
+    event.target.id == "modal-video" ? modalVideo.classList.add("modal-hide") : null;
   };
 
+  // Video modal button click
   btnModalVideo.onclick = function () {
+    // Set the nickname
     myNickname = document.querySelector("#my-nickname").value;
-    console.log(`my nickname is`, myNickname);
-    let nicknameSpan = document.querySelector(`div[data-peer-id="${myPeer.id}"] span`);
-    if (nicknameSpan) {
-      nicknameSpan.innerText = myNickname;
-    }
-    modalVideo.classList.add("modal-hide");
+    document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText = myNickname;
 
-    conns.forEach((conn) => {
-      // check to see if not yourself?
-      if (conn.peer === myPeer.id) {
-        console.log(`conn.peer === myPeer.id`);
-      }
-      conn.send({ key: "nickname", val: { id: myPeer.id, name: myNickname } });
-    });
-    // if (myNickname !== "") callPeerVideo(ptnrPeerId);
-    // modal.classList.add("modal-hide");
+    // Send the nickname to the ptnrs
+    conns
+      .filter((el) => el.peer !== myPeer.id)
+      .forEach((conn) => {
+        conn.send({ key: "nickname", val: { id: myPeer.id, name: myNickname } });
+      });
+
+    // Close the video modal
+    modalVideo.classList.add("modal-hide");
   };
 
-  btnHelp.addEventListener("click", () => {
-    modalHelp.classList.remove("modal-hide");
-  });
-
-  body.addEventListener("click", (event) => {
-    if (event.target.tagName == "VIDEO") {
-      document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
-      modalVideo.classList.remove("modal-hide");
-    }
-  });
-
-  const beforeUnloadListener = (event) => {
+  // Catch the exit event and send it all your ptnrs
+  const beforeUnloadHandler = (event) => {
     event.preventDefault();
     document.URL = document.URL.split("#")[0];
-    conns.forEach((el) => {
-      el.send({ key: "close", val: myPeer.id });
-    });
-    // window.location.href = document.URL.split("#")[0];
+    conns.forEach((el) => el.send({ key: "close", val: myPeer.id }));
   };
 
-  window.addEventListener("beforeunload", beforeUnloadListener, { capture: true });
+  window.addEventListener("beforeunload", beforeUnloadHandler, { capture: true });
 })();

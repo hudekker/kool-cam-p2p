@@ -68,21 +68,21 @@ const getHostBoolPeerObj = async (myId) => {
   return;
 };
 
-const updateHelpModalPtnr = () => {
-  document.querySelector("#modal-help-ptnr").classList.remove("modal-hide");
-  document.querySelector("#ptnr-link").innerHTML = `To add friends to the chat, send them this link <br><span class=highlight>https://kool.cam/#${hostId}`;
+const updateHelpModalText = () => {
+  if (boolHost) {
+    document.querySelector("#modal-help-host").classList.remove("modal-hide");
+    document.querySelector("#ptnr-link2").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
+    document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
+  } else {
+    document.querySelector("#modal-help-ptnr").classList.remove("modal-hide");
+    document.querySelector("#ptnr-link").innerHTML = `To add friends to the chat, send them this link <br><span class=highlight>https://kool.cam/#${hostId}`;
+  }
 };
 
-const updateHelpModalHost = () => {
-  document.querySelector("#modal-help-host").classList.remove("modal-hide");
-  document.querySelector("#ptnr-link2").innerHTML = `Friend link (send to your friends) <br><span class=highlight>https://kool.cam/#${hostId}`;
-  document.querySelector("#host-link").innerHTML = `Host link (this is your link) <br><span class=highlight>https://kool.cam/#${hostId}/host`;
-};
-
-const addVideoStream = (peerId, stream, videoGrid, hostId) => {
-  console.log("inside addVideoStream");
+const addVideoElement = (peerId, stream, videoGrid, hostId) => {
+  console.log("inside addVideoElement");
   if (document.querySelector(`video[data-peer-id="${peerId}"]`)) {
-    console.log("inside addVideoStream but return since = peerId");
+    console.log("inside addVideoElement but return since = peerId");
     return;
   }
 
@@ -106,7 +106,6 @@ const addVideoStream = (peerId, stream, videoGrid, hostId) => {
     p.innerHTML = `<i class="fa-solid fa-user"></i> <span class='nickname'>${peerId}</span>`;
   }
 
-  console.log("append addVideoStream");
   div.append(video);
   div.append(p);
   videoGrid.append(div);
@@ -129,16 +128,13 @@ const connOpen = (conn) => {
   });
 };
 
-const callPeerData = async (myPeer, partnerId, stream, hostId) => {
+const sendDataRequest = async (myPeer, partnerId, stream, hostId) => {
   // Create the conn
   conn = myPeer.connect(partnerId);
   conns.push(conn);
-
-  // Wait for the conn to open and add it to the dropdown
   await connOpen(conn);
 
   // Keep this event listener open, will receive data multiple times
-  // In this implementation, caller is peer and receives only 1 conn.on
   conn.on("data", (data) => {
     // This is NOT recursive because the check is for key == peers and this is only from host
     if (data.key == "peers") {
@@ -182,18 +178,18 @@ const callPeerData = async (myPeer, partnerId, stream, hostId) => {
 };
 
 // Connect to the host
-const callPeerVideo = (myPeer, ptnrPeerId, stream, hostId) => {
+const sendVideoRequest = (myPeer, ptnrPeerId, stream, hostId) => {
   // Get the call object
   const call = myPeer.call(ptnrPeerId, stream, { metadata: "partner nickname" });
   calls.push(call);
 
   // peerjs on event 'stream', partner peer send you his stream
   call.on("stream", (ptnrStream) => {
-    addVideoStream(ptnrPeerId, ptnrStream, videoGrid, hostId);
+    addVideoElement(ptnrPeerId, ptnrStream, videoGrid, hostId);
   });
 };
 
-const receiveConnRequest = async (conn) => {
+const receiveDataRequest = async (conn) => {
   // Wait for the connection to open
   conns.push(conn);
   await connOpen(conn);
@@ -232,7 +228,7 @@ const receiveConnRequest = async (conn) => {
   });
 };
 
-const receiveCallRequest = (call) => {
+const receiveVideoRequest = (call) => {
   // partner Peer Id
   const ptnrPeerId = call.peer;
   let ptnrNickname = call.metadata;
@@ -247,6 +243,6 @@ const receiveCallRequest = (call) => {
 
   // peerjs on event 'stream', partner peer send you his stream
   call.on("stream", (ptnrStream) => {
-    addVideoStream(ptnrPeerId, ptnrStream, videoGrid, hostId);
+    addVideoElement(ptnrPeerId, ptnrStream, videoGrid, hostId);
   });
 };
