@@ -86,7 +86,7 @@ const addVideoElement = (peerId, stream) => {
     return;
   }
 
-  // Existing elements
+  // Existing elements, do i need this?
   let a = document.querySelectorAll("div[data-order]");
   a.forEach((el) => {
     let b = peers?.filter((el2) => el2.id === el.dataset.peerId)[0]?.order;
@@ -100,6 +100,12 @@ const addVideoElement = (peerId, stream) => {
     numOrder = 0;
   }
 
+  for (let i = 0; i < peers.length; i++) {
+    let span = document.querySelector(`div[data-peer-id="${peers[i].id}"] span`);
+    span ? (span.innerText = peers[i].nickname) : null;
+  }
+
+  // Build the elements
   const div = document.createElement("div");
   div.dataset.peerId = peerId;
   div.dataset.order = numOrder;
@@ -117,9 +123,10 @@ const addVideoElement = (peerId, stream) => {
     p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>Host</span>`;
   } else {
     // p.innerHTML = `<i class="fa-solid fa-user-secret"></i> Person #${numUser}`;
-    myNickname = `Friend ${numOrder}`;
+    let nickname = peers.filter((el) => el.id === peerId)?.[0]?.nickname;
+    myNickname = nickname ? nickname : `Friend ${numOrder}`;
+
     p.innerHTML = `<i class="fa-solid fa-user"></i> <span class='nickname'>${myNickname}</span>`;
-    // updatePeersNickname(id, `Friend ${numOrder}`);
   }
 
   div.append(video);
@@ -155,14 +162,6 @@ const handleDataEvents = async (conn) => {
     conns.forEach((el) => el.send({ key: "peers", val: peers }));
   }
 
-  // Do I need this?
-  // if (myNickname) {
-  //   conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
-  //   // if (myPeer.id === hostId) {
-  //   //   conn.send({ key: "peers", val: peers });
-  //   // }
-  // }
-
   // Keep this event listener open, will receive data multiple times
   conn.on("data", async (data) => {
     switch (data.key) {
@@ -172,11 +171,11 @@ const handleDataEvents = async (conn) => {
         peers = [...data.val];
 
         // Update display peers
-        debugger;
-        for (let i = 0; i < peers.length; i++) {
-          let span = document.querySelector(`div [data-peer-id=${peers[i].id}] span.nickname`);
-          span ? (span.innerText = peers[i].nickname) : null;
-        }
+        updateGridNickname();
+        // for (let i = 0; i < peers.length; i++) {
+        //   let span = document.querySelector(`div[data-peer-id="${peers[i].id}"] span`);
+        //   span ? (span.innerText = peers[i].nickname) : null;
+        // }
 
         let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
         newPeers = [...newPeers.filter((x) => x.id != myPeer.id)];
@@ -188,7 +187,6 @@ const handleDataEvents = async (conn) => {
           sendVideoRequest(myPeer, ptnrPeer.id);
           sendDataRequest(myPeer, ptnrPeer.id);
         }
-
         break;
 
       case "host-close":
@@ -207,13 +205,7 @@ const handleDataEvents = async (conn) => {
         document.querySelector(`div[data-peer-id="${id}"] span`).innerText = nickname;
 
         // If you are the host, update the peers array and send it out
-        debugger;
         updatePeersNickname(id, nickname);
-
-        // let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
-        // if (nicknameElement) {
-        //   nicknameElement.innerText = name;
-        // }
         break;
 
       default:
@@ -232,45 +224,7 @@ const sendDataRequest = async (myPeer, ptnrId) => {
   // Create the conn
   let conn = myPeer.connect(ptnrId);
 
-  // conns.push(conn);
-  // await connOpen(conn);
-
   await handleDataEvents(conn);
-  // // Keep this event listener open, will receive data multiple times
-  // conn.on("data", (data) => {
-  //   if (data.key == "peers") {
-  //     let oldPeers = [...peers];
-  //     peers = [...data.val];
-
-  //     let newPeers = [...peers.filter((x) => !oldPeers.includes(x))];
-  //     newPeers = [...newPeers.filter((x) => x.id != myPeer.id)];
-
-  //     newPeers.forEach((el) => {
-  //       console.log(`Calling peer Id = ${el}`);
-  //       sendVideoRequest(myPeer, el.id, stream, hostId);
-  //       sendDataRequest(myPeer, el.id, stream, hostId);
-  //     });
-  //   }
-
-  //   if (data.key == "close") {
-  //     console.log(`Peer ${data.val} closed`);
-  //     removePeer(data.val);
-  //   }
-
-  //   if (data.key == "nickname") {
-  //     let { id, name } = data.val;
-  //     console.log(`received id, name = `, id, name);
-  //     let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
-  //     if (nicknameElement) {
-  //       nicknameElement.innerText = name;
-  //     }
-  //   }
-  // });
-
-  // conn.on("close", () => {
-  //   console.log(`${partnerId} left the chat`, "admin-msg");
-  //   removePeer(partnerId);
-  // });
 };
 
 // Connect to the host
@@ -287,32 +241,7 @@ const sendVideoRequest = (myPeer, ptnrPeerId) => {
 
 const receiveDataRequest = async (conn) => {
   // Keep this event listener open, will receive data multiple times
-  handleDataEvents(conn);
-
-  // conn.on("data", (data) => {
-  //   if (data.key == "peer-close") {
-  //     removePeer(data.val);
-  //   }
-
-  //   if (data.key == "close") {
-  //     console.log(`Peer ${data.val} closed`);
-  //     removePeer(data.val);
-  //   }
-
-  //   if (data.key == "nickname") {
-  //     let { id, name } = data.val;
-  //     console.log(`received id, name = `, id, name);
-  //     let nicknameElement = document.querySelector(`div[data-peer-id="${id}"] span`);
-  //     if (nicknameElement) {
-  //       nicknameElement.innerText = name;
-  //     }
-  //   }
-  // });
-
-  // conn.on("close", () => {
-  //   console.log(`${conn.peer} left the chat`, `admin-msg`);
-  //   removePeer(conn.peer);
-  // });
+  await handleDataEvents(conn);
 };
 
 const receiveVideoRequest = (call) => {
@@ -344,4 +273,11 @@ const updatePeersNickname = (id, nickname) => {
       return el;
     }),
   ];
+};
+
+const updateGridNickname = () => {
+  for (let i = 0; i < peers.length; i++) {
+    let span = document.querySelector(`div[data-peer-id="${peers[i].id}"] span`);
+    span ? (span.innerText = peers[i].nickname) : null;
+  }
 };
