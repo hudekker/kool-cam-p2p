@@ -60,7 +60,7 @@ if (boolRefresh) {
 
   // Open the video modal
   body.addEventListener("click", (event) => {
-    if (event.target == document.querySelector("p.name") || event.target == document.querySelector("span.nickname") || event.target == document.querySelector([(tagName = "i")])) {
+    if (event.target == document.querySelector("p.name") || event.target == document.querySelector("span.nickname") || (event.target.tagName = "I")) {
       // if (event.target.tagName == "VIDEO") {
       // document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
 
