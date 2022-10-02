@@ -114,8 +114,9 @@ const addVideoElement = (peerId, stream) => {
   const video = document.createElement("video");
   video.srcObject = stream;
   video.dataset.peerId = peerId;
+  video.classList.add("video");
   video.setAttribute("playsinline", true);
-  if (peerId === myPeer.id) {
+  if (peerId == myPeer.id) {
     video.muted = true;
   }
 
@@ -123,7 +124,7 @@ const addVideoElement = (peerId, stream) => {
   p.classList.add("name");
 
   if (peerId == hostId) {
-    p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>Host</span>`;
+    p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>${myNickname}</span>`;
   } else {
     // p.innerHTML = `<i class="fa-solid fa-user-secret"></i> Person #${numUser}`;
     let nickname = peers.filter((el) => el.id === peerId)?.[0]?.nickname;

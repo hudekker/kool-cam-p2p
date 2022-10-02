@@ -19,12 +19,17 @@ if (boolRefresh) {
 
   // Open up your video stream and add it to the screen
   myStream = await navigator.mediaDevices.getUserMedia({
-    video: { width: 1280, height: 720 },
+    // video: { width: 1280, height: 720 },
+    video: {
+      width: { min: 1024, ideal: 1280, max: 1920 },
+      height: { min: 576, ideal: 720, max: 1080 },
+    },
     audio: true,
   });
 
   if (boolHost) {
-    peers.push({ id: myPeer.id, nickname: "Host", order: 0, host: true });
+    myNickname = "Host";
+    peers.push({ id: myPeer.id, nickname: myNickname, order: 0, host: true });
   }
 
   addVideoElement(myPeer.id, myStream);
@@ -45,9 +50,9 @@ if (boolRefresh) {
   myPeer.on("call", receiveVideoRequest);
 
   // Modals
-  formHelp.addEventListener("submit", function (e) {
-    e.preventDefault();
-  });
+  // formHelp.addEventListener("submit", function (e) {
+  //   e.preventDefault();
+  // });
   formVideo.addEventListener("submit", function (e) {
     e.preventDefault();
   });
@@ -55,8 +60,10 @@ if (boolRefresh) {
   // Open the video modal
   body.addEventListener("click", (event) => {
     if (event.target.tagName == "VIDEO") {
-      document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
+      // document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
+      document.querySelector("#my-nickname").value = myNickname;
       modalVideo.classList.remove("modal-hide");
+      document.querySelector("#my-nickname").focus();
     }
   });
 

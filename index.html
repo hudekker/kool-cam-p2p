@@ -24,7 +24,7 @@
       <!-- </div> -->
     </div>
 
-    <div id="video-grid"></div>
+    <div id="video-grid" class="video-grid"></div>
   </div>
 
   <!-- popup modal for help-->
@@ -99,26 +99,74 @@
           </li>
         </ul>
       </div>
-      <div class="modal-hide">
+
+      <!-- <div class="modal-hide">
         <p>You may optionally enter your name (nickname) below</p>
         <form id="form-help" class="form-control" action="">
           <label for="input-name-help" class="form-label">Name</label>
           <input id="input-name-help" class="form-input" autocomplete="off" />
         </form>
         <button id="btn-modal-help" class="btn-form-ok">OK</button>
-      </div>
+      </div> -->
     </div>
   </div>
 
   <!-- popup modal for video-->
   <div id="modal-video" class="modal modal-hide">
     <div class="modal-content">
-      <span id="modal-video-close" class="close">&times;</span>
-      <h3 id="peer-id"></h3>
-      <p>Please enter a nickname below</p>
+      <div class="modal-video-top-line">
+        <h3 class="inline">Video</h3>
+        <button id="btn-hangup" class="btn-hangup">Hangup</button>
+        <span id="modal-video-close" class="close">&times;</span>
+      </div>
       <form id="form-video" class="form-control" action="">
-        <label for="my-nickname" class="form-label">Name</label>
+
+        <label for="my-nickname" class="form-label">Your nickname</label>
         <input id="my-nickname" class="form-input" autocomplete="off" />
+
+        <div class="container-toggle">
+          <label for="mobile-sm" class="form-label">Video Size on Mobile (Large / Small)</label>
+          <div class="toggle">
+            <!-- <label class="mobile-sm-choice form-label">Large</label> -->
+            <label class="switch">
+              <input id="mobile-sm" type="checkbox">
+              <span class="slider round"></span>
+            </label>
+            <!-- <label class="mobile-sm-choice form-label">Small</label> -->
+          </div>
+        </div>
+        <div class="container-toggle">
+          <label for="mic" class="form-label">Microphone (On / Off)</label>
+          <div class="toggle">
+            <label class="switch">
+              <input id="mic" type="checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="container-toggle">
+          <label for="speaker" class="form-label">Speaker (On / Off)</label>
+          <div class="toggle">
+            <label class="switch">
+              <input id="speaker" type="checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="container-toggle">
+          <label for="video" class="form-label">Camera (On / Off)</label>
+          <div class="toggle">
+            <!-- <label class="mobile-sm-choice form-label">On</label> -->
+            <label class="switch">
+              <input id="video" type="checkbox">
+              <span class="slider round"></span>
+            </label>
+            <!-- <label class="mobile-sm-choice form-label">Off</label> -->
+          </div>
+        </div>
+
+
+
         <button id="btn-modal-video" class="btn-form-ok">OK</button>
       </form>
     </div>
