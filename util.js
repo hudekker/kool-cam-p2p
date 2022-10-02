@@ -210,6 +210,12 @@ const handleDataEvents = async (conn) => {
         conn.close();
         break;
 
+      case "stream":
+        debugger;
+        console.log(`id: ${data.val.id}`);
+        console.log(`stream: `, data.val.stream);
+        break;
+
       case "nickname":
         let { id, nickname } = data.val;
         console.log(`received id, name = `, id, nickname);
@@ -239,9 +245,14 @@ const sendDataRequest = async (myPeer, ptnrId) => {
 };
 
 // Connect to the host
-const sendVideoRequest = (myPeer, ptnrPeerId) => {
+const sendVideoRequest = (myPeer, ptnrPeerId, metadata = "partner nickname") => {
   // Get the call object
-  const call = myPeer.call(ptnrPeerId, myStream, { metadata: "partner nickname" });
+  const call = myPeer.call(ptnrPeerId, myStream, { metadata: metadata });
+
+  // if (metadata === "refresh") {
+  //   calls = [...calls.filter((el) => el.peer != myPeer.id)];
+  // }
+
   calls.push(call);
 
   // peerjs on event 'stream', partner peer send you his stream
@@ -261,6 +272,11 @@ const receiveVideoRequest = (call) => {
   let orderNum = peers.length;
   let ptnrNickname = `Friend ${orderNum}`;
   // let ptnrNickname = call.metadata;
+
+  // debugger;
+  // if (call.metadata == "refresh") {
+  //   addVideoElement(call.peer, call._localStream);
+  // }
 
   // Keep track of peers, this is sent by host to peers on data requests
   if (boolHost) {

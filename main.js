@@ -25,6 +25,7 @@ if (boolRefresh) {
       height: { min: 576, ideal: 720, max: 1080 },
     },
     audio: true,
+    controls: true,
   });
 
   if (boolHost) {
@@ -89,7 +90,7 @@ if (boolRefresh) {
   };
 
   // Video modal button click
-  btnModalVideo.onclick = function () {
+  btnModalVideo.onclick = async function () {
     // Set the nickname
     myNickname = document.querySelector("#my-nickname").value;
     document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText = myNickname;
@@ -103,26 +104,60 @@ if (boolRefresh) {
         conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
       });
 
+    // Handle the large / small video (true is small)
+    let mobileSm = document.querySelector("#mobile-sm").checked;
+    console.log(`mobileSm = ${mobileSm}`);
+
+    if (mobileSm) {
+      document.querySelector("#video-grid").classList.add("sm");
+    } else {
+      document.querySelector("#video-grid").classList.remove("sm");
+    }
+
+    // Handle the camera off
+    let videoOff = document.querySelector("#video-off").checked;
+
+    // turn if off
+    if (videoOff) {
+      var vidTrack = myStream.getVideoTracks();
+      vidTrack.forEach((track) => (track.enabled = false));
+      // setTimeout(() => {
+      //   myStream.getVideoTracks()[0].stop();
+      // }, 100);
+      //
+      // turn it on, need a new getUserMedia
+    } else {
+      var vidTrack = myStream.getVideoTracks();
+      vidTrack.forEach((track) => (track.enabled = true));
+      // myStream = await navigator.mediaDevices.getUserMedia({
+      //   // video: { width: 1280, height: 720 },
+      //   video: {
+      //     width: { min: 1024, ideal: 1280, max: 1920 },
+      //     height: { min: 576, ideal: 720, max: 1080 },
+      //   },
+      //   audio: true,
+      //   controls: true,
+      // });
+
+      // document.querySelector(`div[data-peer-id="${myPeer.id}"] video`).srcObject = myStream;
+
+      // for (let i = 0; i < conns.length; i++) {
+      //   sendVideoRequest(myPeer, conns[i].peer, "refresh");
+      // }
+    }
+
     // Close the video modal
     modalVideo.classList.add("modal-hide");
   };
 
   btnHangup.addEventListener("click", (event) => {
-    let closeKey = boolHost ? "host-close" : "close";
-
-    // If you are the host do a host-close for the others
-    if (boolHost) {
-      conns
-        .filter((el) => el.peer !== myPeer.id)
-        .forEach((conn) => {
-          conn.send({ key: "host-close", val: myPeer.id });
-        });
-    }
-
-    // Then a normal close ???
     conns
       .filter((el) => el.peer !== myPeer.id)
       .forEach((conn) => {
+        // If you are host ALSO do a host-close
+        if (boolHost) {
+          conn.send({ key: "host-close", val: myPeer.id });
+        }
         conn.send({ key: "close", val: myPeer.id });
       });
   });
