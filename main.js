@@ -68,6 +68,15 @@ if (boolRefresh) {
       document.querySelector("#my-nickname").value = name;
       modalVideo.classList.remove("modal-hide");
       document.querySelector("#my-nickname").focus();
+
+      debugger;
+      let speakerOff = document.querySelector("#speaker-off").checked;
+      let vid = document.querySelector(`video[data-peer-id='${myPeer.id}']`);
+      if (vid.volume == 0) {
+        document.querySelector("#speaker-off").checked = true;
+      } else {
+        document.querySelector("#speaker-off").checked = false;
+      }
     }
   });
 
@@ -90,7 +99,7 @@ if (boolRefresh) {
     event.target.id == "modal-video" ? modalVideo.classList.add("modal-hide") : null;
   };
 
-  // Video modal button click
+  // OK Video modal button click
   btnModalVideo.onclick = async function () {
     // Set the nickname
     myNickname = document.querySelector("#my-nickname").value;
@@ -113,6 +122,16 @@ if (boolRefresh) {
       document.querySelector("#video-grid").classList.add("sm");
     } else {
       document.querySelector("#video-grid").classList.remove("sm");
+    }
+
+    // Handle speaker
+    let speakerOff = document.querySelector("#speaker-off").checked;
+    let vid = document.querySelector(`video[data-peer-id="${myPeer.id}"]`);
+
+    if (speakerOff) {
+      vid.volume = 0;
+    } else {
+      vid.volume = 1;
     }
 
     // Handle muting
@@ -141,6 +160,7 @@ if (boolRefresh) {
     modalVideo.classList.add("modal-hide");
   };
 
+  // Hangup
   btnHangup.addEventListener("click", (event) => {
     conns
       .filter((el) => el.peer !== myPeer.id)
@@ -152,7 +172,10 @@ if (boolRefresh) {
         conn.send({ key: "close", val: myPeer.id });
       });
 
-    window.close();
+    // Close the video modal
+    modalVideo.classList.add("modal-hide");
+
+    // open(location, "_self").close();
   });
 
   // Catch the exit event and send it all your ptnrs

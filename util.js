@@ -117,8 +117,10 @@ const addVideoElement = (peerId, stream) => {
   video.classList.add("video");
   video.controls = true;
   video.setAttribute("playsinline", true);
+  video.muted = false;
   if (peerId == myPeer.id) {
-    video.muted = true;
+    // video.muted = true;
+    video.volume = 0;
   }
 
   const p = document.createElement("p");
