@@ -125,7 +125,8 @@ const addVideoElement = (peerId, stream) => {
   p.classList.add("name");
 
   if (peerId == hostId) {
-    p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>${myNickname}</span>`;
+    let nickname = peers.filter((el) => el.id === peerId)?.[0]?.nickname;
+    p.innerHTML = `<i class="fa-solid fa-ghost"></i> <span class='nickname'>${nickname}</span>`;
   } else {
     // p.innerHTML = `<i class="fa-solid fa-user-secret"></i> Person #${numUser}`;
     let nickname = peers.filter((el) => el.id === peerId)?.[0]?.nickname;
