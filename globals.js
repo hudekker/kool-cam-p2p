@@ -20,6 +20,8 @@ let btnModalHelp = document.querySelector("#btn-modal-help");
 let btnModalVideo = document.querySelector("#btn-modal-video");
 let formHelp = document.querySelector("#form-help");
 let formVideo = document.querySelector("#form-video");
+let btnHangup = document.querySelector("#btn-hangup");
+let mobileSm = document.querySelector("#mobile-sm");
 let myNickname;
 
 const videoGrid = document.getElementById("video-grid");

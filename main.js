@@ -61,7 +61,9 @@ if (boolRefresh) {
   body.addEventListener("click", (event) => {
     if (event.target.tagName == "VIDEO") {
       // document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
-      document.querySelector("#my-nickname").value = myNickname;
+
+      let name = document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText;
+      document.querySelector("#my-nickname").value = name;
       modalVideo.classList.remove("modal-hide");
       document.querySelector("#my-nickname").focus();
     }
@@ -104,6 +106,26 @@ if (boolRefresh) {
     // Close the video modal
     modalVideo.classList.add("modal-hide");
   };
+
+  btnHangup.addEventListener("click", (event) => {
+    let closeKey = boolHost ? "host-close" : "close";
+
+    // If you are the host do a host-close for the others
+    if (boolHost) {
+      conns
+        .filter((el) => el.peer !== myPeer.id)
+        .forEach((conn) => {
+          conn.send({ key: "host-close", val: myPeer.id });
+        });
+    }
+
+    // Then a normal close ???
+    conns
+      .filter((el) => el.peer !== myPeer.id)
+      .forEach((conn) => {
+        conn.send({ key: "close", val: myPeer.id });
+      });
+  });
 
   // Catch the exit event and send it all your ptnrs
   const beforeUnloadHandler = (event) => {

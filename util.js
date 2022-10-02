@@ -207,6 +207,7 @@ const handleDataEvents = async (conn) => {
       case "close":
         console.log(`Peer ${data.val} closed`);
         removePeer(data.val);
+        conn.close();
         break;
 
       case "nickname":
