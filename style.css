@@ -109,6 +109,9 @@ body {
   text-align: center;
   /* height: 100%; */
 }
+p.name {
+  cursor: pointer;
+}
 
 .video-grid {
   margin-top: 20px;

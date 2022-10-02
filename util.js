@@ -115,6 +115,7 @@ const addVideoElement = (peerId, stream) => {
   video.srcObject = stream;
   video.dataset.peerId = peerId;
   video.classList.add("video");
+  video.controls = true;
   video.setAttribute("playsinline", true);
   if (peerId == myPeer.id) {
     video.muted = true;

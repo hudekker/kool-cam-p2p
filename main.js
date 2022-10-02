@@ -60,7 +60,8 @@ if (boolRefresh) {
 
   // Open the video modal
   body.addEventListener("click", (event) => {
-    if (event.target.tagName == "VIDEO") {
+    if (event.target == document.querySelector("p.name") || event.target == document.querySelector("span.nickname")) {
+      // if (event.target.tagName == "VIDEO") {
       // document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
 
       let name = document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText;
@@ -114,6 +115,16 @@ if (boolRefresh) {
       document.querySelector("#video-grid").classList.remove("sm");
     }
 
+    // Handle muting
+    let micOff = document.querySelector("#mic-off").checked;
+    var audioTrack = myStream.getAudioTracks();
+
+    if (micOff) {
+      audioTrack.forEach((track) => (track.enabled = false));
+    } else {
+      audioTrack.forEach((track) => (track.enabled = true));
+    }
+
     // Handle the camera off
     let videoOff = document.querySelector("#video-off").checked;
 
@@ -121,29 +132,9 @@ if (boolRefresh) {
     if (videoOff) {
       var vidTrack = myStream.getVideoTracks();
       vidTrack.forEach((track) => (track.enabled = false));
-      // setTimeout(() => {
-      //   myStream.getVideoTracks()[0].stop();
-      // }, 100);
-      //
-      // turn it on, need a new getUserMedia
     } else {
       var vidTrack = myStream.getVideoTracks();
       vidTrack.forEach((track) => (track.enabled = true));
-      // myStream = await navigator.mediaDevices.getUserMedia({
-      //   // video: { width: 1280, height: 720 },
-      //   video: {
-      //     width: { min: 1024, ideal: 1280, max: 1920 },
-      //     height: { min: 576, ideal: 720, max: 1080 },
-      //   },
-      //   audio: true,
-      //   controls: true,
-      // });
-
-      // document.querySelector(`div[data-peer-id="${myPeer.id}"] video`).srcObject = myStream;
-
-      // for (let i = 0; i < conns.length; i++) {
-      //   sendVideoRequest(myPeer, conns[i].peer, "refresh");
-      // }
     }
 
     // Close the video modal
