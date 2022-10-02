@@ -60,7 +60,7 @@ if (boolRefresh) {
 
   // Open the video modal
   body.addEventListener("click", (event) => {
-    if (event.target == document.querySelector("p.name") || event.target == document.querySelector("span.nickname")) {
+    if (event.target == document.querySelector("p.name") || event.target == document.querySelector("span.nickname") || event.target == document.querySelector("i")) {
       // if (event.target.tagName == "VIDEO") {
       // document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
 
@@ -151,6 +151,8 @@ if (boolRefresh) {
         }
         conn.send({ key: "close", val: myPeer.id });
       });
+
+    window.close();
   });
 
   // Catch the exit event and send it all your ptnrs
