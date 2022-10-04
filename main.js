@@ -58,32 +58,19 @@ if (boolRefresh) {
     e.preventDefault();
   });
 
-  // Open the video modal
-  body.addEventListener("click", (event) => {
-    if (event.target == document.querySelector("p.name") || event.target == document.querySelector("span.nickname") || event.target.parentElement == document.querySelector("p.name")) {
-      // if (event.target.tagName == "VIDEO") {
-      // document.querySelector("#peer-id").innerHTML = `Your peer id is <span class="highlight">${myPeer.id}</span>`;
-
-      let name = document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText;
-      document.querySelector("#my-nickname").value = name;
-      modalVideo.classList.remove("modal-hide");
-      document.querySelector("#my-nickname").focus();
-
-      debugger;
-      let speakerOff = document.querySelector("#speaker-off").checked;
-      let vid = document.querySelector(`video[data-peer-id='${myPeer.id}']`);
-      if (vid.volume == 0) {
-        document.querySelector("#speaker-off").checked = true;
-      } else {
-        document.querySelector("#speaker-off").checked = false;
-      }
-    }
-  });
-
   // Open the help modal
   btnHelp.addEventListener("click", () => {
     modalHelp.classList.remove("modal-hide");
   });
+
+  // Open the video modal
+  // body.addEventListener("click", (event) => {
+  // Handle click on Modal Video Open
+  // let pName = document.querySelector("p.name");
+  // if ((event.target.tagName == "P" && event.target.classList.contains("name")) || (event.target.parentElement.tagName == "P" && event.target.parentElement.srcElement.classList.contains("name"))) {
+  //   handleModalVideoOpen(event);
+  // }
+  // });
 
   // Close the modals (click on the x)
   modalHelp.querySelector("#modal-help-close").onclick = function () {
@@ -94,70 +81,14 @@ if (boolRefresh) {
   };
 
   // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function (event) {
+  window.onclick = (event) => {
     event.target.id == "modal-help" ? modalHelp.classList.add("modal-hide") : null;
     event.target.id == "modal-video" ? modalVideo.classList.add("modal-hide") : null;
   };
 
   // OK Video modal button click
-  btnModalVideo.onclick = async function () {
-    // Set the nickname
-    myNickname = document.querySelector("#my-nickname").value;
-    document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText = myNickname;
-
-    updatePeersNickname(myPeer.id, myNickname);
-
-    // Send the nickname to the ptnrs
-    conns
-      .filter((el) => el.peer !== myPeer.id)
-      .forEach((conn) => {
-        conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
-      });
-
-    // Handle the large / small video (true is small)
-    let mobileSm = document.querySelector("#mobile-sm").checked;
-    console.log(`mobileSm = ${mobileSm}`);
-
-    if (mobileSm) {
-      document.querySelector("#video-grid").classList.add("sm");
-    } else {
-      document.querySelector("#video-grid").classList.remove("sm");
-    }
-
-    // Handle speaker
-    let speakerOff = document.querySelector("#speaker-off").checked;
-    let vid = document.querySelector(`video[data-peer-id="${myPeer.id}"]`);
-
-    if (speakerOff) {
-      vid.volume = 0;
-    } else {
-      vid.volume = 1;
-    }
-
-    // Handle muting
-    let micOff = document.querySelector("#mic-off").checked;
-    var audioTrack = myStream.getAudioTracks();
-
-    if (micOff) {
-      audioTrack.forEach((track) => (track.enabled = false));
-    } else {
-      audioTrack.forEach((track) => (track.enabled = true));
-    }
-
-    // Handle the camera off
-    let videoOff = document.querySelector("#video-off").checked;
-
-    // turn if off
-    if (videoOff) {
-      var vidTrack = myStream.getVideoTracks();
-      vidTrack.forEach((track) => (track.enabled = false));
-    } else {
-      var vidTrack = myStream.getVideoTracks();
-      vidTrack.forEach((track) => (track.enabled = true));
-    }
-
-    // Close the video modal
-    modalVideo.classList.add("modal-hide");
+  btnModalVideoOk.onclick = async (event) => {
+    handleModalVideoSubmit(event);
   };
 
   // Hangup

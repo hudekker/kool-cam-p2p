@@ -123,8 +123,7 @@
         <label for="my-nickname" class="form-label">Your nickname</label>
         <input id="my-nickname" class="form-input" autocomplete="off" />
 
-
-        <div class="container-toggle">
+        <div id="mic-section" class="container-toggle">
           <label for="mic" class="form-label">Microphone (On / Off)</label>
           <div class="toggle">
             <label class="switch">
@@ -133,7 +132,7 @@
             </label>
           </div>
         </div>
-        <div class="container-toggle">
+        <div id="speaker-section" class="container-toggle">
           <label for="speaker" class="form-label">Speaker (On / Off)</label>
           <div class="toggle">
             <label class="switch">
@@ -142,7 +141,7 @@
             </label>
           </div>
         </div>
-        <div class="container-toggle">
+        <div id="video-section" class="container-toggle">
           <label for="video" class="form-label">Video (On / Off)</label>
           <div class="toggle">
             <!-- <label class="mobile-sm-choice form-label">On</label> -->
@@ -164,7 +163,7 @@
             <!-- <label class="mobile-sm-choice form-label">Small</label> -->
           </div>
         </div>
-        <button id="btn-modal-video" class="btn-form-ok">OK</button>
+        <button id="btn-modal-video-ok" class="btn-form-ok">OK</button>
       </form>
     </div>
   </div>
@@ -172,6 +171,7 @@
   <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
   <script src="globals.js"></script>
   <script src="util.js"></script>
+  <script src="handlers.js"></script>
   <script src="main.js"></script>
 </body>
 

@@ -142,6 +142,7 @@ const addVideoElement = (peerId, stream) => {
   videoGrid.append(div);
 
   video.addEventListener("loadedmetadata", () => video.play());
+  p.addEventListener("click", handleModalVideoOpen);
 };
 
 const removePeer = (peerId) => {

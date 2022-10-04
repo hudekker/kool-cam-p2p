@@ -17,7 +17,7 @@ let btnHelp = document.querySelector("#btn-help");
 let modalHelp = document.querySelector("#modal-help");
 let modalVideo = document.querySelector("#modal-video");
 let btnModalHelp = document.querySelector("#btn-modal-help");
-let btnModalVideo = document.querySelector("#btn-modal-video");
+let btnModalVideoOk = document.querySelector("#btn-modal-video-ok");
 let formHelp = document.querySelector("#form-help");
 let formVideo = document.querySelector("#form-video");
 let btnHangup = document.querySelector("#btn-hangup");
@@ -26,3 +26,7 @@ let myNickname;
 const videoGrid = document.getElementById("video-grid");
 // let peers = new Map();
 let peers = [];
+
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
