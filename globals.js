@@ -22,6 +22,7 @@ let formHelp = document.querySelector("#form-help");
 let formVideo = document.querySelector("#form-video");
 let btnHangup = document.querySelector("#btn-hangup");
 let myNickname;
+let clickPeerId;
 
 const videoGrid = document.getElementById("video-grid");
 // let peers = new Map();

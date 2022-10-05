@@ -1,5 +1,5 @@
 const handleModalVideoOpen = (event) => {
-  let clickPeerId = event.currentTarget.parentElement.dataset.peerId;
+  clickPeerId = event.currentTarget.parentElement.dataset.peerId;
   // await sleep(2000);
 
   // Prepopulate the name
@@ -32,18 +32,18 @@ const handleModalVideoOpen = (event) => {
 
   if (boolMe) {
     let audioTracks = myStream.getAudioTracks();
-    let boolMic = audioTracks.reduce(accum, (el) => accum && el.enabled === true, true);
+    let boolMic = audioTracks.reduce((accum, el) => accum && el.enabled === true, true);
     document.querySelector("#mic-off").checked = !boolMic;
 
     // Show the current state of camera
     let videoTracks = myStream.getVideoTracks();
-    let boolVid = videoTracks.reduce(accum, (el) => accum && el.enabled === true, true);
+    let boolVid = videoTracks.reduce((accum, el) => accum && el.enabled === true, true);
     document.querySelector("#video-off").checked = !boolVid;
   }
 };
 
 const handleModalVideoSubmit = (event) => {
-  let clickPeerId = event.currentTarget.parentElement.dataset.peerId;
+  // let clickPeerId = event.currentTarget.parentElement.dataset.peerId;
   let boolMe = clickPeerId === myPeer.id ? true : false;
 
   // If this is you, then you can update your nickname, mic, and vid

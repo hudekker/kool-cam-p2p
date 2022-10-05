@@ -87,7 +87,7 @@ if (boolRefresh) {
   };
 
   // OK Video modal button click
-  btnModalVideoOk.onclick = async (event) => {
+  btnModalVideoOk.onclick = (event) => {
     handleModalVideoSubmit(event);
   };
 
