@@ -119,7 +119,6 @@ const addVideoElement = (peerId, stream) => {
   video.setAttribute("playsinline", true);
   video.muted = false;
   if (peerId == myPeer.id) {
-    // video.muted = true;
     video.volume = 0;
   }
 

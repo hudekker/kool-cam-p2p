@@ -43,20 +43,56 @@ const handleModalVideoOpen = (event) => {
 };
 
 const handleModalVideoSubmit = (event) => {
-  // HANDLE NICKNAME
-  // Set the nickname
+  let clickPeerId = event.currentTarget.parentElement.dataset.peerId;
+  let boolMe = clickPeerId === myPeer.id ? true : false;
 
-  myNickname = document.querySelector("#my-nickname").value;
-  document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText = myNickname;
+  // If this is you, then you can update your nickname, mic, and vid
+  if (boolMe) {
+    // HANDLE NICKNAME
+    // Set the nickname
+    myNickname = document.querySelector("#my-nickname").value;
+    document.querySelector(`div[data-peer-id="${myPeer.id}"] span`).innerText = myNickname;
 
-  updatePeersNickname(myPeer.id, myNickname);
+    updatePeersNickname(myPeer.id, myNickname);
 
-  // Send the nickname to the ptnrs
-  conns
-    .filter((el) => el.peer !== myPeer.id)
-    .forEach((conn) => {
-      conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
-    });
+    // Send the nickname to the ptnrs
+    conns
+      .filter((el) => el.peer !== myPeer.id)
+      .forEach((conn) => {
+        conn.send({ key: "nickname", val: { id: myPeer.id, nickname: myNickname } });
+      });
+
+    // HANDLE MICROPHONE
+    let micOff = document.querySelector("#mic-off").checked;
+    let audioTracks = myStream.getAudioTracks();
+
+    if (micOff) {
+      audioTracks.forEach((track) => (track.enabled = false));
+    } else {
+      audioTracks.forEach((track) => (track.enabled = true));
+    }
+
+    // HANDLE VIDEO
+    // Handle the video off
+    let videoOff = document.querySelector("#video-off").checked;
+    let videoTracks = myStream.getVideoTracks();
+
+    if (videoOff) {
+      videoTracks.forEach((track) => (track.enabled = false));
+    } else {
+      videoTracks.forEach((track) => (track.enabled = true));
+    }
+  }
+
+  // HANDLE SPEAKER
+  let speakerOff = document.querySelector("#speaker-off").checked;
+  let video = document.querySelector(`video[data-peer-id="${clickPeerId}"]`);
+
+  if (speakerOff) {
+    video.volume = 0;
+  } else {
+    video.volume = 1;
+  }
 
   // Handle the large / small video (true is small)
   let mobileSm = document.querySelector("#mobile-sm").checked;
@@ -66,37 +102,6 @@ const handleModalVideoSubmit = (event) => {
     document.querySelector("#video-grid").classList.add("sm");
   } else {
     document.querySelector("#video-grid").classList.remove("sm");
-  }
-
-  // HANDLE SPEAKER
-  let speakerOff = document.querySelector("#speaker-off").checked;
-  let video = document.querySelector(`video[data-peer-id="${myPeer.id}"]`);
-
-  if (speakerOff) {
-    video.volume = 0;
-  } else {
-    video.volume = 1;
-  }
-
-  // HANDLE MICROPHONE
-  let micOff = document.querySelector("#mic-off").checked;
-  let audioTracks = myStream.getAudioTracks();
-
-  if (micOff) {
-    audioTracks.forEach((track) => (track.enabled = false));
-  } else {
-    audioTracks.forEach((track) => (track.enabled = true));
-  }
-
-  // HANDLE CAMERA
-  // Handle the camera off
-  let videoOff = document.querySelector("#video-off").checked;
-  let videoTracks = myStream.getVideoTracks();
-
-  if (videoOff) {
-    videoTracks.forEach((track) => (track.enabled = false));
-  } else {
-    videoTracks.forEach((track) => (track.enabled = true));
   }
 
   // Close the video modal
